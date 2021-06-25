@@ -13,7 +13,7 @@
 **Prerequisites:**
 * Basic familiarity with the R Statistical Programming Environment
 * Current Version of RStudio (> v1.4) and R (> v4.0)
-* Local Git installation and access to an online Git repository (preferably GitUP by the University of Potsdam)
+* Local Git installation and access to an online Git hosting platform (preferably GitUP by the University of Potsdam)
 
 **Objectives:**
 * Acquire a detailed overview of modern standards and methods in data-driven ecological research
