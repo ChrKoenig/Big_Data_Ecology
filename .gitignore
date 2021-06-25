@@ -19,6 +19,7 @@
 
 # RStudio files
 .Rproj.user/
+.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -39,6 +40,6 @@ vignettes/*.pdf
 .Renviron
 
 # Local and private files
-/preparation.R
-literature
-data
+project/preparation.R
+literature/
+data/
