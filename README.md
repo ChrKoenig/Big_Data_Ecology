@@ -19,3 +19,7 @@
 * Acquire a detailed overview of modern standards and methods in data-driven ecological research
 * Gain practical experience in working with heterogeneous ecological datasets, databases, code versioning, optimization, parallel processing and data visualization
 * Be able to develop and carry out your own data-rich research projects with a view on time efficiency, reproducibility and collaboration
+
+**Provisional schedule**
+
+<img src="https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/lectures/workshop_schedule.png" width="600">
