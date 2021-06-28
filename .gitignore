@@ -42,4 +42,4 @@ vignettes/*.pdf
 project/preparation.R
 literature/
 data/
-.Rmd
+practicals/*.Rmd
