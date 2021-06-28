@@ -166,7 +166,7 @@ usually is the central hub in projects with multiple contributors. With
 the above command, we told git to remember the URL whenever we reference
 `origin`. We now `push` our local files to the remote, further
 specifying that `origin` is the *upstream* repository (`-u` flag),
-i.e. the default location to `push` changes to.
+i.e. the default location to `push` changes to.
 
 ``` bash
 git push -u origin --all    # Push local files to remote repository
@@ -239,7 +239,7 @@ Now, try to set up a git repository for our course project:
 
 -   Create a new folder for the course project and put it under version
     control
--   Within the repository, create a new .R file for the analysis script.
+-   Within the repository, create a new R-Project and add an .R file for the analysis script.
     You can use the template from
     [here](https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/project/course_project.R).
 -   Create a new project on Github/GitUP and add it as a remote upstream
