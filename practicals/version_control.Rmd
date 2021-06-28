@@ -1,7 +1,7 @@
 ---
 title: "Version Control"
 author: "Christian König"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 **This practical exercise is a part of the workshop [Big Data Ecology](https://github.com/ChrKoenig/Big_Data_Ecology)**
@@ -126,9 +126,11 @@ git status
 ```
 
 ## Some final notes
-Many modern IDEs such as RStudio or VSCode provide a more user-friendly interface to the most common git operations. This is great! However, while the command line may not be the most comfortable way to use git, it surely is the most effective way to build a solid understanding of the software. At some point you will run into a problem -- it's not a coincidence that five out of the ten [top-voted questions on StackOverflow](https://stackoverflow.com/questions?sort=MostVotes&edited=true) are related to git -- that cannot be solved from within your IDE, and then some familiarity with the git command line will be of great help. 
+Many modern IDEs such as RStudio or VSCode provide a more user-friendly interface to the most common git operations. This is great! However, while the command line may not be the most comfortable way to use git, it surely is the most effective way to build a solid understanding of the software. At some point you will run into a problem that cannot be solved from within your IDE -- it's not a coincidence that five out of the ten [top-voted questions on StackOverflow](https://stackoverflow.com/questions?sort=MostVotes&edited=true) are related to git. Then, some familiarity with the git command line will be of great help. 
 
 ## Exercise
+Now, try to set up a git repository for our course project:
+
 * Create a new folder for the course project and put it under version control
 * Within the repository, create a new .R file for the analysis script. You can use the template from [here](https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/project/course_project.R).
 * Create a new project on Github/GitUP and add it as a remote upstream to your local project
