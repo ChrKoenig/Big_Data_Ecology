@@ -19,7 +19,6 @@
 
 # RStudio files
 .Rproj.user/
-.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -43,3 +42,4 @@ vignettes/*.pdf
 project/preparation.R
 literature/
 data/
+.Rmd
