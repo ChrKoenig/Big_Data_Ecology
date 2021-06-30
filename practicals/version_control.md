@@ -7,7 +7,7 @@ Ecology](https://github.com/ChrKoenig/Big_Data_Ecology)**
 
 ------------------------------------------------------------------------
 
-## First steps
+## Introduction
 
 In the [thematic excursion on version
 control](https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/lectures/version_control.pdf),

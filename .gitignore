@@ -43,3 +43,4 @@ project/preparation.R
 literature/
 data/
 practicals/*.Rmd
+practicals/profvis*

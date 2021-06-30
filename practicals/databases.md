@@ -32,8 +32,8 @@ install.packages(c("dplyr", "RSQLite"))
 
 ## Data manipulation in SQL
 
-First, we go to our version controlled project folder and create a
-subfolder named `data`, which will hold all data required during the
+First, we go to our version controlled course project folder and create
+a subfolder named `data`, which will hold all data required during the
 practicals and the course project. Next, we download the `sqlite`
 version of the Portal Project teaching DB from Figshare into the `data`
 folder.
@@ -83,7 +83,7 @@ RSQLite::dbGetQuery(conn, "SELECT COUNT(*) AS n_row FROM plots")
     ##   n_row
     ## 1    24
 
-#### Exercise - Database structure and design
+### Exercise - Database structure and design
 
 -   Repeat the above commands for the other two tables
 -   What do you think is the schema of this database?
@@ -186,7 +186,7 @@ RSQLite::dbGetQuery(conn, "SELECT species.genus, COUNT(*) AS n_records
     ## 4        Amphispiza       303
     ....
 
-#### Exercise - SQL queries
+### Exercise - SQL queries
 
 We have seen some of the core concepts of data manipulation in SQL. Now
 try to use SQL to answer the following questions:
@@ -264,7 +264,7 @@ species %>% dplyr::filter(genus == "Dipodomys")
     ## 3         DS Dipodomys spectabilis Rodent
     ## 4         DX Dipodomys         sp. Rodent
 
-**Joins**
+**Joins:**
 
 ``` r
 surveys %>% 
@@ -280,7 +280,7 @@ surveys %>%
     ## 4         7  16 1977 Dipodomys
     ....
 
-**Aggregation**
+**Aggregation:**
 
 ``` r
 surveys %>% 
@@ -307,7 +307,7 @@ This short session has given us a glimpse at `dplyr`’s capabilities. The
 ever-growing ecosystem of `R`-packages that follow and implement the
 philosphy of [*tidy* data](https://r4ds.had.co.nz/tidy-data.html).
 
-#### Exercise - dplyr
+### Exercise - dplyr
 
 -   Read the linked section on tidy data
 
