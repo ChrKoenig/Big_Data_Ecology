@@ -35,12 +35,12 @@ the `R` language and its implementation (dynamic typing, mutable
 environments, code interpretation, …) entail performance penalties
 compared to other programming languages. In return, `R` provides one of
 the most productive and featureful environments for data processing.
-Moreover, we can avoid many of the performance bottlenecks by
+Luckily, we can avoid many of `R`’s performance bottlenecks by
 structuring our code accordingly.
 
 Let’s implement a set of functions that calculate the row sums of a
 matrix. We will start with the most idiomatic and efficient solution and
-make it gradually worse by replacing built-in functions with
+make it gradually ‘worse’ by replacing built-in functions with
 self-written ones, adding loops, and modifying/growing objects in each
 iteration.
 
@@ -122,11 +122,11 @@ bench::mark(
     ## # A tibble: 5 x 6
     ##   expression       min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>     <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 f1(big_matrix)  1      1        24.3        1        NaN
-    ## 2 f2(big_matrix)  4.17   4.60      4.02     372.       Inf
-    ## 3 f3(big_matrix) 21.6   21.0       1.13     505.       Inf
-    ## 4 f4(big_matrix) 21.5   26.1       1         10.8      NaN
-    ## 5 f5(big_matrix) 21.8   19.1       1.33     126.       NaN
+    ## 1 f1(big_matrix)  1      1        25.6        1        NaN
+    ## 2 f2(big_matrix)  3.36   4.43      4.98     372.       Inf
+    ## 3 f3(big_matrix) 18.1   27.1       1.03     505.       Inf
+    ## 4 f4(big_matrix) 19.5   19.4       1.21      10.8      NaN
+    ## 5 f5(big_matrix) 19.9   20.3       1        126.       Inf
 
 As we suspected, the performance difference between the implementations
 is substantial, with `f1` being \~17-times faster and \~500-times more
@@ -237,8 +237,8 @@ bench::mark(
     ## # A tibble: 2 x 6
     ##   expression                            min  median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>                        <bch:t> <bch:t>     <dbl> <bch:byt>    <dbl>
-    ## 1 sapply(sleep_times, sleep)             7s      7s     0.143        NA        0
-    ## 2 parSapply(cl, sleep_times, sleep)   3.01s   3.01s     0.332        NA        0
+    ## 1 sapply(sleep_times, sleep)          7.01s   7.01s     0.143        NA        0
+    ## 2 parSapply(cl, sleep_times, sleep)      3s      3s     0.333        NA        0
 
 Was your intuition right? The sequential version took `sum(sleep_times)`
 seconds, whereas the parallel version took `max(sleep_times)` seconds.
@@ -268,7 +268,7 @@ bench::mark(
     ## # A tibble: 1 x 6
     ##   expression                                                          min median
     ##   <bch:expr>                                                       <bch:> <bch:>
-    ## 1 foreach(i = 1:length(sleep_times)) %dopar% sleep(sleep_times[i])  3.04s  3.04s
+    ## 1 foreach(i = 1:length(sleep_times)) %dopar% sleep(sleep_times[i])  3.03s  3.03s
     ## # … with 3 more variables: itr/sec <dbl>, mem_alloc <bch:byt>, gc/sec <dbl>
 
 Just like the `parSapply` version, the parallel `foreach` version takes
