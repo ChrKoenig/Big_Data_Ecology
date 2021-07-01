@@ -1,3 +1,4 @@
+
 ###            This script is part of the workshop Big Data Ecology          ###
 # The sections of this course project are structured along the data life cycle 
 # sensu Michener & Jones (2012). The project is complemented by a set of 
@@ -75,7 +76,8 @@ ggplot(occs, aes(x = decimalLongitude, y = decimalLatitude)) +
 # --> What problem is apparent immediately? Are there any other obvious inconsistencies?
 
 # Check for geographical inconsistencies and other common problems
-occs_cleaned = occs %>% drop_na("decimalLongitude", "decimalLatitude") %>% 
+occs_cleaned = occs %>% 
+  drop_na("decimalLongitude", "decimalLatitude") %>% 
   clean_coordinates(lon = "decimalLongitude", lat = "decimalLatitude")
 # --> What's the most common coordinate problem? Should we remove it?
 
@@ -126,7 +128,7 @@ tmin = raster::getData("worldclim", var = "tmin", res = 10, path = "data/") # 10
 prec = raster::getData("worldclim", var = "prec", res = 10, path = "data/") # 10 arc minutes
 # --> Expectation: Two 900x2160x12 Raster Stacks
 
-# Plot layers
+# Plot environmental layers
 plot(tmin)
 plot(prec)
 
@@ -178,7 +180,7 @@ grid_count_cmpl = grid_count %>%
 # --> Expectation: a 203045x4 tibble
 
 ##### Extract environmental variables for each grid and month #####
-# Test extraction for one env. variablet for one month
+# Test extraction for one env. variable for one month
 system.time(extract(tmin_crop[[1]], sweden_grid, fun = mean, na.rm = T, df = T)) 
 # ~6s runtime --> 6*12*2 = 144s expected total runtime
 
@@ -193,10 +195,10 @@ env_extract = mclapply(1:12, function(month){
     rename_with(~str_replace_all(.,"[:digit:]", "")) %>% 
     dplyr::select(grid_id, tmin, prec, month)
 }, mc.cores = n_cores)
+# --> Expectation: A list of 12 simple feature polygon collections with data columns grid_id, tmin, prec, month
 
 # Combine list to single dataframe
 env_extract_sf = bind_rows(env_extract)
-env_extract_final = bind_rows(env_extract) %>% st_drop_geometry()
 
 #--------------------------------------------------------------------------------#
 ####                                   ANALYSE                                ####
@@ -205,20 +207,34 @@ library(broom)
 library(modelr)
 
 ##### Prepare final analysis table #####
+# Merge env_extract_sf with grid_count_cmpl
+# Add a new column indicating presence/absence for a given species-cell-month combination
 data_final = env_extract_sf %>% 
   merge(grid_count_cmpl) %>% 
   mutate(present = as.numeric(n_occ > 0),
          month = as.numeric(month))
+# --> Expectation: A 20304x7 simple feature polygon collection
 
-##### Plot Distribution #####
-maps_abund = ggplot(data_final, aes(fill = n_occ)) +
+##### Plot Data #####
+# Boxplots of presence latitude per species and month
+ggplot(occs_final, aes(x = species, y = decimalLatitude, fill = species, col = species)) +
+  geom_boxplot() +
+  facet_wrap("month", nrow = 1) +
+  theme_bw() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+
+# Maps of geographical variation in abundance per species and month
+ggplot(data_final, aes(fill = n_occ)) +
   geom_sf(lwd = 0) +
   scale_fill_gradient(low = "blue", high = "red", trans = "log", breaks = c(1,10,100,1000,10000)) +
   facet_grid(rows = vars(species), cols = vars(month)) +
   theme(axis.text.x = element_text(angle=45, hjust=1)) +
   theme_bw()
 
-maps_pa = ggplot(data_final, aes(fill = as.factor(present))) +
+# Maps of geographical variation in presence per species and month
+ggplot(data_final, aes(fill = as.factor(present))) +
   geom_sf(lwd = 0) +
   scale_fill_discrete() +
   facet_grid(rows = vars(species), cols = vars(month)) +
@@ -226,25 +242,33 @@ maps_pa = ggplot(data_final, aes(fill = as.factor(present))) +
   theme_bw()
 
 ##### Fit models #####
+# Model Presence/Absence as a function of environmental variables (linear + squared terms)
 specs = unique(data_final$species)
 models = lapply(specs, function(spec){
   df_tmp = filter(data_final, species == spec)
   glm_tmp = glm(present ~ tmin + I(tmin^2) + prec + I(prec^2), family = "binomial", data = df_tmp)
 }) %>% setNames(specs)
+# --> Expectation: A list of four fitted GLMs (one per species) with appropriate link function
 
 ##### Plot environmental response #####
+# Create evenly spaced 'grid' of environmental conditions
 tmin_range = modelr::seq_range(range(env_extract_sf$tmin, na.rm = T), n = 100)
 prec_range = modelr::seq_range(range(env_extract_sf$prec, na.rm = T), n = 100)
 var_grid = expand_grid(tmin = tmin_range, prec = prec_range)
+# --> Expectation: A nx2 matrix of evenly spaced combinations of tmin and prec
 
+# Predict from fitted models to grid
 pred_list = lapply(specs, function(spec){
   pred_tmp = predict(models[[spec]], newdata = var_grid, type = "response")
   df_tmp = data.frame(species = spec, pred = pred_tmp) %>% 
     bind_cols(var_grid)
 })
+# --> Expectation: A list of model predictions for each species for var_grid 
 
+# Create dataframe from pred_list
 pred_df = bind_rows(pred_list)
 
+# Plot predicted presence probability under varying combinations of prec and tmin
 ggplot(pred_df, aes(x = tmin, y = prec, z = pred, color = pred)) +
   geom_contour_filled() +
   scale_color_viridis_c() +
@@ -253,4 +277,5 @@ ggplot(pred_df, aes(x = tmin, y = prec, z = pred, color = pred)) +
 #--------------------------------------------------------------------------------#
 ####                                   PUBLISH                                ####
 #--------------------------------------------------------------------------------#
-# ODMAP PROTOCOL
+# Go to https://odmap.wsl.ch/ and create an ODMAP protocol of this course project 
+# For more information on ODMAP, see Zurell et al. (2020) 10.1111/ecog.04960
