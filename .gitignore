@@ -44,3 +44,4 @@ literature/
 data/
 practicals/*.Rmd
 practicals/profvis*
+practicals/scratchpad.R
