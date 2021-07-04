@@ -38,8 +38,8 @@ occ_download = rgbif::occ_data(<...>) # rgbif only allows to retrieve 500 occurr
 occs =  <...> 
 occs_meta =  <...> 
   
-  # For larger queries, we need to write custom code or, better, use the GBIF download center:
-  # 1. Download full occurrence dataset
+# For larger queries, we need to write custom code or, better, use the GBIF download center:
+# 1. Download full occurrence dataset
 download.file("https://api.gbif.org/v1/occurrence/download/request/0294378-200613084148143.zip", destfile = "<...>")
 occs = read_<...>(unzip("<...>"), <...>)
 
@@ -150,7 +150,7 @@ occs_st = sf::st_as_sf(<...>, crs = 4326)
 # --> Expectation: a 616244x59 simple feature point collection
 
 ##### Create a regular 0.5° grid across Sweden #####
-sweden = ne_countries(country = "Sweden", returnclass = "sf")
+sweden = ne_countries(<...>)
 sweden_grid = sf::st_make_grid(<...>) %>% 
   sf::st_sf() %>% 
   rownames_to_column("grid_id")
@@ -278,8 +278,11 @@ ggplot(pred_df, aes(<...>)) +
   scale_color_viridis_c() +
   facet_wrap(<...>)         # make one plot per species
 
+# How do species differ in their environmental response?
+# Do our findings fit the information on migration behaviour? 
+
 #--------------------------------------------------------------------------------#
 ####                                   PUBLISH                                ####
 #--------------------------------------------------------------------------------#
-# Go to https://odmap.wsl.ch/ and create an ODMAP protocol of this course project 
+# Go to https://odmap.wsl.ch/ and create an examplary ODMAP protocol of this course project 
 # For more information on ODMAP, see Zurell et al. (2020) 10.1111/ecog.04960
