@@ -11,14 +11,15 @@ Ecology](https://github.com/ChrKoenig/Big_Data_Ecology)**
 
 Here, we focus on spatial data, a central data type in ecology.
 Following the content of the lecture, we will work with vector and
-raster data and perform a number of operations based on their attribute
-data and spatial characteristics
+raster data and perform a number of operations based on their
+attributes, geometries and spatial relationships.
 
 We will use the following packages:
 
 ``` r
 library(sf)
 library(raster)
+library(rnaturalearth)
 library(dplyr)
 library(ggplot2)
 ```
@@ -26,7 +27,7 @@ library(ggplot2)
 If you haven’t installed them, please do so with the following command:
 
 ``` r
-install.packages(c("dplyr", "sf", "raster", "ggplot2"))
+install.packages(c("sf", "raster", "rnaturalearth", "dplyr", "ggplot2"))
 ```
 
 ## Vector data
@@ -51,16 +52,23 @@ There are three fundamental types of vector data:
     define a bounded area, enclosed by lines. Thus, a polygon needs to
     consist of at least three coordinate pairs (x,y).
 
-The `sf` package provides a set of vector data classes and methods that
-follow the *tidy* data model we already met in the *data base* unit. In
-fact, the *simple feature* standard implemented by the `sf` is
+The `sf` package provides a set of vector data classes and methods
+(*simple features*) that follow the *tidy* data model we already met in
+the context of data bases. In fact, the *simple feature* standard is
 language-independent and has been [adopted by many geospatial analysis
 and database
 platforms](https://en.wikipedia.org/wiki/Simple_Features#Implementations).
+You can think of a *simple feature* as a normal data frame where each
+row corresponds to one spatial entity, with the coordinates/geometries
+of these entities being stored in a special column. Additional
+attributes can be simply added as new columns. This design makes *simple
+features* compatible with SQL-style data manipulation while maintaining
+full integrity of spatial and attribute data.
 
 ### Point features
 
-Let’s create a set of random points to work with:
+Let’s create a set of 20 points with random longitude and latitude
+values:
 
 ``` r
 set.seed(1)
@@ -73,8 +81,8 @@ plot(coords)
 
 ![](spatial_data_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-Now we convert this coordinate data frame into a collection of spatial
-points.
+Now we use the `sf`package to convert this coordinate data frame into a
+collection of simple point features.
 
 ``` r
 points_sf = sf::st_as_sf(coords, coords = c("longitude", "latitude"), crs = 4326)  
@@ -106,15 +114,13 @@ note that the EPSG code provided to the `CRS` argument of the
 `st_as_sf()` function is sufficient to fully define the coordinate
 reference system (CRS) of our spatial object.
 
-Next, we can add some attributes to `points_sf`. Since simple features
-are essentially `data.frames` with a special column for the geometry of
-the features, we can use the very same manipulation tools as for
-non-spatial tidy data. To add a column (attribute), we use the
-`mutate()` verb known from `dplyr`:
+Next, we use the very same manipulation tools as for other tidy data to
+add an attribute column to `points_sf`. Specifically, we use the
+`mutate()` verb known from `dplyr` for this task:
 
 ``` r
 points_sf = points_sf %>% 
-  mutate(name = sample(LETTERS[1:5], 20, replace = T))
+  mutate(name = sample(LETTERS[1:5], 20, replace = T)) # Add random letters as new attribute 'name'
 points_sf
 ```
 
@@ -140,16 +146,14 @@ points_sf
 
 The structure of simple line and polygon features is analogous to simple
 point features, the only difference being that the geometry column now
-holds multiple coordinate pairs to define the shape of the features.
-Since it is cumbersome to create the geometry for line and polygon
-features from scratch, we’ll simply confirm this statement aggregating
-`points_sf` to one line feature per name.
+holds multiple coordinates to define the shape of the features. We’ll
+confirm this by aggregating `points_sf` to one line feature per name.
 
 ``` r
 lines_sf = points_sf %>% 
   group_by(name) %>%     # group by name
   filter(n() > 1) %>%    # lines need more than 1 point
-  summarise(do_union = F) %>%  # Don't union geometries per group
+  summarise(do_union = F) %>%  # Don't union geometries
   st_cast("LINESTRING")  # Create one line feature per group
 lines_sf
 ```
@@ -180,52 +184,54 @@ ggplot() +
 ## Raster data
 
 We will use the `raster` package to represent and analyse raster data in
-`R`. The package contains different raster data classes, most important
-for this course are `RasterLayer`, `RasterStack` and `RasterBrick`.
-`RasterLayer` contain only a single layer of values while `RasterStack`
-and `RasterBrick` can contain multiple layers (from separate files or
-from a single multi-layer file, respectively).
+`R`. The package contains different data classes, most importantly
+`RasterLayer`, `RasterStack` and `RasterBrick`. `RasterLayers` contain
+only a single layer of values while `RasterStacks` and `RasterBricks`
+contain multiple layers (from separate files or from a single
+multi-layer file, respectively).
 
 ### RasterLayers, RasterStacks and RasterBricks
 
-The function `raster()` can be used to create RasterLayer objects.
+The function `raster()` can be used to create RasterLayer objects. We’ll
+create a continuous global grid of 10x10-degree raster cells. For
+illustration purposes, we set the CRS this time with a proj4 string.
 
 ``` r
-r1 = raster(ncol=18, nrow=36, xmx=180, xmn=-180, ymx=90,  ymn=-90)
+r1 = raster(ncol=36, nrow=18, xmx=180, xmn=-180, ymx=90,  ymn=-90)
+crs(r1) = "+proj=longlat +datum=WGS84 +no_defs" # set Proj4 string
 r1
 ```
 
     ## class      : RasterLayer 
-    ## dimensions : 36, 18, 648  (nrow, ncol, ncell)
-    ## resolution : 20, 5  (x, y)
+    ## dimensions : 18, 36, 648  (nrow, ncol, ncell)
+    ## resolution : 10, 10  (x, y)
     ## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
     ## crs        : +proj=longlat +datum=WGS84 +no_defs
 
-We can access the attributes of each grid cell by using the function
-`values()`. Since we set up an empty raster, there are no values yet in
-the `RasterLayer` object and thus we assign some randomly.
+`RasterLayers` can only possess one attribute/value per cell. We use the
+`values()` function to access the attributes of the `raster` object and
+assign some random values.
 
 ``` r
-values(r1) <- rnorm(ncell(r1)) # assign random values
+values(r1) = rnorm(ncell(r1)) # assign random values
 plot(r1)   # plot raster
 ```
 
 ![](spatial_data_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 `RasterStack` and `RasterBrick` objects can be created with the
-`stack()` and `brick()` function, respectively.
+`stack()` and `brick()` function, respectively. Note that this only
+works when all rasters have the same spatial extent and resolution.
 
 ``` r
-# Copy r1 into new object
-r2 = r1
+r2 = r1 # Copy r1 into new object
 
-# Stack the raster layers
-stack(r1,r2)
+stack(r1,r2) # Create RasterStack 
 ```
 
     ## class      : RasterStack 
-    ## dimensions : 36, 18, 648, 2  (nrow, ncol, ncell, nlayers)
-    ## resolution : 20, 5  (x, y)
+    ## dimensions : 18, 36, 648, 2  (nrow, ncol, ncell, nlayers)
+    ## resolution : 10, 10  (x, y)
     ## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
     ## crs        : +proj=longlat +datum=WGS84 +no_defs 
     ## names      :   layer.1,   layer.2 
@@ -233,12 +239,12 @@ stack(r1,r2)
     ## max values :  3.810277,  3.810277
 
 ``` r
-brick(r1,r2)
+brick(r1,r2) # Create RasterBrick
 ```
 
     ## class      : RasterBrick 
-    ## dimensions : 36, 18, 648, 2  (nrow, ncol, ncell, nlayers)
-    ## resolution : 20, 5  (x, y)
+    ## dimensions : 18, 36, 648, 2  (nrow, ncol, ncell, nlayers)
+    ## resolution : 10, 10  (x, y)
     ## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
     ## crs        : +proj=longlat +datum=WGS84 +no_defs 
     ## source     : memory
@@ -246,20 +252,21 @@ brick(r1,r2)
     ## min values : -3.008049, -3.008049 
     ## max values :  3.810277,  3.810277
 
-### Reading in and downloading data
+### Importing and downloading data
 
-In addition to creating `Raster*` objects, the functions `raster()`,
-`stack()`, and `brick()` can be used to read files from disk. For that,
-we simply provide a file path to the raster file(s) instead of the names
-of the `R` objects.
+The `raster()`, `stack()`, and `brick()` functions can not only be used
+for creating `Raster*` objects from scratch, but also for reading raster
+files from disk. To this end, we simply provide one or multiple file
+paths instead of the names of the `R` objects.
 
-Additionally, `raster` offers the interesting feature of downloading
-data directly from a number of standard repositories with the
-`getData()` function. For more information, see the help pages ?getData.
+Additionally, the `raster` package offers the interesting feature of
+downloading data directly from a number of standard repositories with
+the `getData()` function. For more information, see the help pages
+?getData.
 
 ``` r
-# Download RasterStack of global monthly minimum temperatures
-tmin = getData("worldclim", var="tmin", res=10) # Can also be saved to disc with download = T
+# Download RasterStack of global monthly minimum temperatures (°C*10)
+tmin = getData("worldclim", var="tmin", res=10, download = T, path = "../data/") 
 plot(tmin)
 ```
 
@@ -270,24 +277,119 @@ plot(tmin)
 In the following section, we will look at some common operations on
 spatial data.
 
-### Attribute data Operations
+### Attribute and spatial data operations
 
-Attribute data operations in the `sf` package work . If we want to
-convert an `sf` object, we can use the `drop_geometry` function. A nice
-side effect of this is a considerable performance boost.
+As we’ve seen above, we can manipulate the attribute data of `sf`
+objects in the same way as non-spatial tabular data by using
+`dplyr`-syntax, e.g. the `filter()`, `mutate()`, `select()`,
+`summarise()`, and `arrange()` functions. The geometry column of `sf`
+objects is *sticky* throughout attribute data operations, i.e. it is
+always added back to the result. If we want to explicitly remove the
+spatial context of the data, e.g. to speed up computations, we can use
+the `st_drop_geometry()` function and convert our `sf` object to an
+ordinary `data.frame`.
 
-### Spatial data operations
+``` r
+points_sf %>% 
+  st_drop_geometry() %>% 
+  class()
+```
 
-Joining + Merge map algebra
+    ## [1] "data.frame"
+
+Attribute data of raster objects behave similar to matrices in `R`. We
+can do arithmetic operations (addition, subtraction, multiplication,
+division), produce layer-wise summaries with the `cellStats()` function,
+or calculate cell-wise summaries with the standard `min()`, `max()`, or
+`mean()` functions. Both single- and multi-layer rasters can be subset
+using familiar `[]`-syntax\`.
+
+``` r
+r1 + r1 # Arithmetic
+```
+
+    ## class      : RasterLayer 
+    ## dimensions : 18, 36, 648  (nrow, ncol, ncell)
+    ## resolution : 10, 10  (x, y)
+    ## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+    ## crs        : +proj=longlat +datum=WGS84 +no_defs 
+    ## source     : memory
+    ## names      : layer 
+    ## values     : -6.016097, 7.620553  (min, max)
+
+``` r
+cellStats(r1, min) # Minimum value per layer
+```
+
+    ## [1] -3.008049
+
+``` r
+min(stack(r1, r1/2)) # Minimum value per cell 
+```
+
+    ## class      : RasterLayer 
+    ## dimensions : 18, 36, 648  (nrow, ncol, ncell)
+    ## resolution : 10, 10  (x, y)
+    ## extent     : -180, 180, -90, 90  (xmin, xmax, ymin, ymax)
+    ## crs        : +proj=longlat +datum=WGS84 +no_defs 
+    ## source     : memory
+    ## names      : layer 
+    ## values     : -3.008049, 1.905138  (min, max)
+
+``` r
+r1[7,13] # Subsetting
+```
+
+    ## [1] -0.331033
+
+Instead of their attribute data, we can use the shape and location of
+spatial objects to modify them. Since a complete coverage of spatial
+data operations is beyond the scope of this workshop, we’ll just have a
+look at one example. Here, we’ll use the `st_join()` function to join
+country-level information from a simple polygon feature layer to our
+`points_sf` object.
+
+``` r
+world_sf = ne_countries(returnclass = "sf") # Download country layer using rnaturalearth package
+st_join(points_sf, world_sf) %>%  # join data based on location
+  dplyr::select(point_name = name.x, country_name = name.y, population = pop_est) # select and rename results columns
+```
+
+    ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
+    ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
+
+    ## Simple feature collection with 20 features and 3 fields
+    ## geometry type:  POINT
+    ## dimension:      XY
+    ## bbox:           xmin: -157.7569 ymin: -87.58974 xmax: 177.0862 ymax: 78.24694
+    ## geographic CRS: WGS 84
+    ## First 10 features:
+    ##    point_name country_name population                    geometry
+    ## 1           B       Canada   33487208  POINT (-84.41688 78.24694)
+    ## 2           D         <NA>         NA  POINT (-46.0354 -51.81435)
+    ## 3           D        Egypt   83082869   POINT (26.22721 27.30128)
+    ## 4           D         <NA>         NA  POINT (146.9548 -67.40008)
+    ## 5           B         <NA>         NA POINT (-107.3945 -41.90028)
+    ## 6           D    Australia   21262641  POINT (143.4203 -20.49946)
+    ## 7           A   Antarctica       3802  POINT (160.0831 -87.58974)
+    ## 8           A         <NA>         NA  POINT (57.88721 -21.17017)
+    ## 9           D       Russia  140041247   POINT (46.48106 66.54435)
+    ## 10          A         <NA>         NA POINT (-157.7569 -28.73718)
 
 ### Geometry operations
 
-Cropping Intersection Dissolve
-
-Aggregate raster
-
 ### Raster-Vector operations
 
-extract mask/crop
+We can extract raster values for a set of point, line or polygon feature
+with the `extract()` function.
+
+``` r
+extract(r1, points_sf) # Extract values of r1 at point coordinates defined by points_sf
+extract(r1, lines_sf)  # Extract values of r1 across line transect defined by lines_sf
+```
+
+Subsetting a `Raster*` object to an area defined by a bounding box or
+simple polygon feature is done using the `crop()` and `mask()`
+functions, respectively.
 
 ## Some final notes

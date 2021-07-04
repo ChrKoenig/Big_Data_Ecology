@@ -113,22 +113,24 @@ ggplot(occs_final, aes(x = decimalLongitude, y = decimalLatitude)) +
 library(raster)
 
 ##### Download trait data #####
-download.file("https://datadryad.org/stash/downloads/file_stream/32736", destfile = "<...>")
-download.file("https://datadryad.org/stash/downloads/file_stream/32737", destfile = "<...>")
+# Find the following paper online:
+# Storchová, L, Hořák, D. Life-history characteristics of European birds. Global Ecol Biogeogr. 2018; 27: 400– 406. https://doi.org/10.1111/geb.12709 
+# Identify the repository where the associated data is stored and retrieve the URL of the data and metadata files 
+download.file(url = "<...>", destfile = "<...>") # Data
+download.file(url = "<...>", destfile = "<...>") # Metadata
 traits  = read_<...>("<...>", <...>)
 traits_meta = read_<...>("data/traits_meta.txt", <...>)
 
 # Extract migration behaviour of the different Circus species 
-<...>   # inspect column names
 migration_behaviour = traits %>%       
   <...> %>%    # subset to Circus species
-  <...>        # Select columns relevant to migration behavious
+  <...>        # Select columns relevant to migration behaviours
 # --> Expectation: A 4 x 4 tibble
 # --> Which species has a different migration behaviour than the others?
 
 ##### Download Worldclim monthly layers for minimum temperature and precipitation at 10 arcmin resolution #####
-tmin = raster::getData("worldclim", <...>) # 10 arc minutes
-prec = raster::getData("worldclim", <...>) # 10 arc minutes
+tmin = <...> # 10 arc minutes raster
+prec = <...> # 10 arc minutes raster
 # --> Expectation: Two 900x2160x12 Raster Stacks
 
 # Plot environmental layers
