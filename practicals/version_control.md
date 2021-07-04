@@ -241,7 +241,7 @@ Now, try to set up a git repository for our course project:
     control
 -   Within the repository, create a new R-Project and add an .R file for the analysis script.
     You can use the template from
-    [here](https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/project/course_project.R).
+    [here](https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/project/course_project_template.R).
 -   Create a new project on Github/GitUP and add it as a remote upstream
     to your local project
 -   Commit your local changes and push them to your remote repo
