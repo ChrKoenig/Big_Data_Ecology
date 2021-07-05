@@ -22,4 +22,4 @@
 
 **Provisional schedule**
 
-<img src="https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/workshop_schedule.png" width="600">
+<img src="https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/figs/workshop_schedule.png" width="600">

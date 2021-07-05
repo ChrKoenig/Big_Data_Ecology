@@ -43,5 +43,4 @@ project/preparation.R
 literature/
 data/
 practicals/*.Rmd
-practicals/profvis*
 practicals/scratchpad.R

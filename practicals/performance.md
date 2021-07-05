@@ -122,11 +122,11 @@ bench::mark(
     ## # A tibble: 5 x 6
     ##   expression       min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>     <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 f1(big_matrix)  1      1        25.6        1        NaN
-    ## 2 f2(big_matrix)  3.36   4.43      4.98     372.       Inf
-    ## 3 f3(big_matrix) 18.1   27.1       1.03     505.       Inf
-    ## 4 f4(big_matrix) 19.5   19.4       1.21      10.8      NaN
-    ## 5 f5(big_matrix) 19.9   20.3       1        126.       Inf
+    ## 1 f1(big_matrix)  1      1        21.1        1        NaN
+    ## 2 f2(big_matrix)  4.15   4.83      4.50     372.       Inf
+    ## 3 f3(big_matrix) 16.2   16.7       1.26     505.       Inf
+    ## 4 f4(big_matrix) 19.9   20.2       1.06      10.8      NaN
+    ## 5 f5(big_matrix) 21.3   21.4       1        126.       Inf
 
 As we suspected, the performance difference between the implementations
 is substantial, with `f1` being \~17-times faster and \~500-times more
@@ -163,7 +163,7 @@ profvis({
 })
 ```
 
-![flame graph](profvis_flamegraph.png)
+![flame graph](../figs/profvis_flamegraph.png)
 
 The ‘Flame graph’ profile shows the time spent and memory used for each
 line of the code. Interestingly, the `apply` function took 110 ms and
@@ -175,7 +175,7 @@ functions written in languages other than `R`.
 We can click the ‘Data’ tab to get slightly more information and a
 hierachical tree view of the profile.
 
-![data](profvis_data.png)
+![data](../figs/profvis_data.png)
 
 Here, we see that a call to `aperm.default` has taken 30 ms of the total
 110 ms of our `apply` expression. This additional time spent on setting
@@ -238,7 +238,7 @@ bench::mark(
     ##   expression                            min  median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>                        <bch:t> <bch:t>     <dbl> <bch:byt>    <dbl>
     ## 1 sapply(sleep_times, sleep)          7.01s   7.01s     0.143        NA        0
-    ## 2 parSapply(cl, sleep_times, sleep)      3s      3s     0.333        NA        0
+    ## 2 parSapply(cl, sleep_times, sleep)   3.01s   3.01s     0.333        NA        0
 
 Was your intuition right? The sequential version took `sum(sleep_times)`
 seconds, whereas the parallel version took `max(sleep_times)` seconds.
@@ -265,10 +265,12 @@ bench::mark(
 )
 ```
 
+    ## Warning: Some expressions had a GC in every iteration; so filtering is disabled.
+
     ## # A tibble: 1 x 6
     ##   expression                                                          min median
     ##   <bch:expr>                                                       <bch:> <bch:>
-    ## 1 foreach(i = 1:length(sleep_times)) %dopar% sleep(sleep_times[i])  3.03s  3.03s
+    ## 1 foreach(i = 1:length(sleep_times)) %dopar% sleep(sleep_times[i])  3.05s  3.05s
     ## # … with 3 more variables: itr/sec <dbl>, mem_alloc <bch:byt>, gc/sec <dbl>
 
 Just like the `parSapply` version, the parallel `foreach` version takes
