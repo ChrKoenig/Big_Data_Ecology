@@ -119,7 +119,7 @@ library(raster)
 download.file(url = "<...>", destfile = "<...>") # Data
 download.file(url = "<...>", destfile = "<...>") # Metadata
 traits  = read_<...>("<...>", <...>)
-traits_meta = read_<...>("data/traits_meta.txt", <...>)
+traits_meta = read_<...>("<...>", <...>)
 
 # Extract migration behaviour of the different Circus species 
 migration_behaviour = traits %>%       
@@ -180,7 +180,7 @@ grid_count_cmpl = grid_count %>%
   mutate(<...>) %>%    # convert month, species and grid_id to factor
   complete(<...>) %>%  # create all factor combinations
   mutate(<...>) %>%    # Set occurrence count of new combinations to 0
-  <...>                # Remove columns that contain NA
+  <...>                # Remove rows that contain NA
 # --> Expectation: a 203045x4 tibble
 
 ##### Extract environmental variables for each grid and month #####
@@ -214,7 +214,7 @@ library(modelr)
 ##### Prepare final analysis table #####
 # Merge env_extract_sf with grid_count_cmpl
 data_final = <...> %>% 
-  merge(<...>) %>% 
+  merge(<...>) %>%           # Merge dataframe env_extract_sf to attribute table of grid_count_cmpl
   mutate(present = <...>,    # Add a new column indicating presence/absence for a given species-cell-month combination
          month = <...>)      # convert month from factor to numeric
 # --> Expectation: A 20304x7 simple feature polygon collection

@@ -1,4 +1,3 @@
-
 ###            This script is part of the workshop Big Data Ecology          ###
 # The sections of this course project are structured along the data life cycle 
 # sensu Michener & Jones (2012). The project is complemented by a set of 
