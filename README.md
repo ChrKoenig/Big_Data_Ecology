@@ -17,9 +17,9 @@ This workshop was initially developed for graduate students of the [BioMove Rese
 
 **Number of participants:** max. 15
 
+**License**
+CC-BY-4.0
+
 **Schedule**
 
 <img src="https://github.com/ChrKoenig/Big_Data_Ecology/blob/main/figs/workshop_schedule.png" width="600">
-
-**License**
-CC-BY-4.0
