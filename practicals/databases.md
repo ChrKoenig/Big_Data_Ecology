@@ -219,14 +219,11 @@ function, and can be stringed together using the so-called ‘pipe’
 operator: `%>%`. Moreover, they integrate seamlessly with `dplyr`’s
 `group_by()` function to perform grouped manipulations of your dataset.
 While `dplyr` offers nothing that could, in principle, not be done in
-`base R`, its greatest advantage is its consistency and versatility. For
-example, `dyplr` has exactly *one* verb/function to select columns from
-a dataframe based on their names
-(`dplyr::select(df, c("col1", "col2"))`), whereas in `base R` there is a
-plethora of alternatives with [potentially surprising
-behaviour](https://stackoverflow.com/a/10085807/3070022) (e.g.:
-`df[c("col1","col2)]`, `subset(df, c("col1","col2"))`,
-`df[,c("col1","col2")]`) .
+`base R`, its greatest advantage is its consistency. For example,
+`dplyr` has exactly *one* verb/function to select columns from a
+`data.frame` based on their names (`dplyr::select()`), whereas in
+`base R` there is a plethora of alternatives with [potentially
+surprising behaviour](https://stackoverflow.com/a/10085807/3070022).
 
 Let’s have a closer look! We first need to load the database tables into
 `R` and assign them to objects:
@@ -305,7 +302,7 @@ compared to `data.frame`, but should otherwise behave the same.
 This short session has given us a glimpse at `dplyr`’s capabilities. The
 `dplyr` package is at the heart of the `tidyverse`, a much larger and
 ever-growing ecosystem of `R`-packages that implement the philosphy of
-[*tidy* data](https://r4ds.had.co.nz/tidy-data.html).
+[tidy data](https://r4ds.had.co.nz/tidy-data.html).
 
 ### Exercise - dplyr
 
