@@ -42,5 +42,4 @@ vignettes/*.pdf
 project/preparation.R
 literature/
 data/
-practicals/*.Rmd
 practicals/scratchpad.R
