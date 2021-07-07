@@ -361,8 +361,8 @@ tmin_resampled = raster::resample(tmin, r1)
 
 ### Raster-Vector operations
 
-We can extract raster values for a set of point, lines or polygon
-feature with the `extract()` function.
+We can extract raster values for a set of point, line or polygon
+features with the `extract()` function.
 
 ``` r
 raster::extract(r1, points_sf) # Extract values of r1 at coordinates of points_sf
@@ -399,13 +399,13 @@ plot(mask(tmin[[1]], sweden)) # Subset by geometry, extent unchanged
 -   Add a new attribute to `world_sf` containing the average minimum
     temperature in January of each country (Tip: Subset `tmin` to the
     correct layer and think about coarsening its resolution, run the
-    extraction within `mutate()` to create new attribute). What are the
-    only two countries with a value below -30 C°?
+    extraction within `mutate()` to create a new attribute). What are
+    the only two countries with a value below -30 C°?
 
 ## Some final notes
 
 Spatial data are among the computationally most challenging data types
 in ecology. This is exacerbated by the advent of very high-resolution
-remote sensing data products with resolutions of up to 10 m.
-Understanding how to handle them effectively can mean the difference
-between seconds and hours of compute time.
+remote sensing data with resolutions of up to 10 m. Understanding how to
+handle them effectively can mean the difference between seconds and
+hours of compute time.

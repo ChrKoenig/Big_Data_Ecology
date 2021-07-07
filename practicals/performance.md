@@ -122,11 +122,11 @@ bench::mark(
     ## # A tibble: 5 x 6
     ##   expression       min median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>     <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 f1(big_matrix)  1      1        21.1        1        NaN
-    ## 2 f2(big_matrix)  4.15   4.83      4.50     372.       Inf
-    ## 3 f3(big_matrix) 16.2   16.7       1.26     505.       Inf
-    ## 4 f4(big_matrix) 19.9   20.2       1.06      10.8      NaN
-    ## 5 f5(big_matrix) 21.3   21.4       1        126.       Inf
+    ## 1 f1(big_matrix)  1      1        21.7        1        NaN
+    ## 2 f2(big_matrix)  4.43   4.82      4.67     372.       Inf
+    ## 3 f3(big_matrix) 19.7   18.4       1.21     505.       Inf
+    ## 4 f4(big_matrix) 22.0   22.9       1.02      10.8      NaN
+    ## 5 f5(big_matrix) 22.8   22.9       1        126.       Inf
 
 As we suspected, the performance difference between the implementations
 is substantial, with `f1` being \~17-times faster and \~500-times more
@@ -204,7 +204,7 @@ this is the `parallel` package. Per default, `parallel` sets up a
 parallel socket cluster, which is fine for our purposes.
 
 ``` r
-n_cpus = parallel::detectCores()     # Check you many CPUs are available on your system
+n_cpus = parallel::detectCores()     # Check how many CPUs are available on your system
 cl = parallel::makeCluster(n_cpus)   # Create cluster
 cl                                   # Print cluster properties
 ```
@@ -265,12 +265,10 @@ bench::mark(
 )
 ```
 
-    ## Warning: Some expressions had a GC in every iteration; so filtering is disabled.
-
     ## # A tibble: 1 x 6
     ##   expression                                                          min median
     ##   <bch:expr>                                                       <bch:> <bch:>
-    ## 1 foreach(i = 1:length(sleep_times)) %dopar% sleep(sleep_times[i])  3.05s  3.05s
+    ## 1 foreach(i = 1:length(sleep_times)) %dopar% sleep(sleep_times[i])  3.03s  3.03s
     ## # … with 3 more variables: itr/sec <dbl>, mem_alloc <bch:byt>, gc/sec <dbl>
 
 Just like the `parSapply` version, the parallel `foreach` version takes

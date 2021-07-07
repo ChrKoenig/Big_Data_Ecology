@@ -1,9 +1,9 @@
-###            This script is part of the workshop Big Data Ecology          ###
+###              This script is part of the workshop Big Data Ecology          ###
 # The sections of this course project are structured along the data life cycle 
 # sensu Michener & Jones (2012). The project is complemented by a set of 
 # lectures and practicals covering different aspects of Big Data Ecology.
 # Check https://github.com/ChrKoenig/Big_Data_Ecology for more information  
-#---------------------------------------------------------------------------- -#
+#--------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------#
 ####                                    PLAN                                  ####
@@ -185,7 +185,7 @@ system.time(extract(tmin_crop[[1]], sweden_grid, fun = mean, na.rm = T, df = T))
 
 # Parallelize extraction
 n_cores = detectCores()
-env_extract = mclapply(1:12, function(month){
+env_extract = mclapply(1:12, function(month){   # TODO: This didn't work on Windows machines, adapt to foreach + doPar instead?
   tmin_tmp = extract(tmin_crop[[month]], sweden_grid, fun = mean, na.rm = T, cellnumbers = F, df = T)
   prec_tmp = extract(prec_crop[[month]], sweden_grid, fun = mean, na.rm = T, cellnumbers = F, df = T)
   env_tmp  = full_join(tmin_tmp, prec_tmp) 

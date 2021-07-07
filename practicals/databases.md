@@ -39,7 +39,7 @@ version of the Portal Project teaching DB from Figshare into the `data`
 folder.
 
 ``` r
-download.file("https://ndownloader.figshare.com/files/11188550", destfile = "data/portal_mammals.sqlite") 
+download.file("https://ndownloader.figshare.com/files/11188550", destfile = "data/portal_mammals.sqlite") # TODO: This didn't work on Windows machines, Double-check download source
 ```
 
 Instead of loading all data from the database into R, we want to perform
@@ -296,16 +296,16 @@ surveys %>%
     ##  2 Ammospermophilus       437
     ....
 
-You may have noticed that the last results table does not seem to be the
-same as our earlier SQL query. That is because `dplyr` has implicitly
-converted the `data.frame` into a `tibble` when calling `group_by()`. A
-`tibble` has improved printing and subsetting methods compared to
-`data.frame`, but should otherwise behave identical.
+You may have noticed that the last results table does not seem to be
+identical to our earlier SQL query. That is because `dplyr` has
+implicitly converted the `data.frame` into a `tibble` when calling
+`group_by()`. A `tibble` has improved printing and subsetting methods
+compared to `data.frame`, but should otherwise behave the same.
 
 This short session has given us a glimpse at `dplyr`’s capabilities. The
 `dplyr` package is at the heart of the `tidyverse`, a much larger and
-ever-growing ecosystem of `R`-packages that follow and implement the
-philosphy of [*tidy* data](https://r4ds.had.co.nz/tidy-data.html).
+ever-growing ecosystem of `R`-packages that implement the philosphy of
+[*tidy* data](https://r4ds.had.co.nz/tidy-data.html).
 
 ### Exercise - dplyr
 
@@ -321,14 +321,14 @@ Use `dplyr` to answer the following questions:
 
 ``` eval
 plot_count_DM = surveys %>% 
-  <...>_join(<...>, by = <...>) %>% 
-  <...>_join(<...>, by = <...>) %>% 
-  dplyr::select(species_id == <...>) %>% 
-  group_by(<...>) %>% 
-  summarise(n_records = <...>)
+  <...>_join(<...>, by = <...>) %>%   # Join plots table
+  <...>_join(<...>, by = <...>) %>%   # Join species table
+  dplyr::filter(species_id == <...>) %>%   # Subset to Dipodomys merriami
+  group_by(<...>) %>%    # Group by the variable we want to summarize
+  summarise(n_records = <...>)   # count records per variable level
 ```
 
-At last we close the connection to the Portal Project database. This is
+At last, we close the connection to the Portal Project database. This is
 good practice, especially when querying a database server via a remote
 connection.
 

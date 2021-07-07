@@ -1,12 +1,12 @@
-###            This script is part of the workshop Big Data Ecology          ###
+###              This script is part of the workshop Big Data Ecology          ###
 # The sections of this course project are structured along the data life cycle 
 # sensu Michener & Jones (2012). The project is complemented by a set of 
 # lectures and practicals covering different aspects of Big Data Ecology.
 # Check https://github.com/ChrKoenig/Big_Data_Ecology for more information  
-
+#
 # Fill the placeholders (<...>) across the script to develop the course project
 # and find out more about the migration behaviour of Harrier species in Sweden!
-#---------------------------------------------------------------------------- -#
+#--------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------#
 ####                                    PLAN                                  ####
@@ -190,7 +190,7 @@ system.time(raster::extract(<...>, <...>, fun = mean, <...>, df = T))
 
 # Parallelize extraction
 n_cores = <...> # Check available CPU cores
-env_extract = <...>(<...>, function(month){
+env_extract = <...>(<...>, function(month){  # TODO: This didn't work on Windows machines, adapt to foreach + doPar instead?
   tmin_tmp = extract(<...>)  # extract tmin
   prec_tmp = extract(<...>)  # extract prec 
   env_tmp  = <...>           # combine extracted values in data frame
