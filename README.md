@@ -1,4 +1,4 @@
-# Workshop "Big Data Ecology"
+# Workshop - Big Data Ecology
 This workshop was initially developed for graduate students of the [BioMove Research Training Group](https://www.bio-move.org/) and is made available for re-use and adaptation in other contexts. 
 
 **Objectives:**
