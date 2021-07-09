@@ -140,7 +140,7 @@ can use the id columns `plot_id` and `species_id` to relate the three
 database tables and query them collectively. The key operation for this
 purpose is `JOIN`.
 
-Recall from the lecture that `JOIN` combines the rows of two tables
+Recall from the lecture that `JOIN` combines data from two tables
 based on a related column. For example, we might be interested in all
 surveys that found a species of *Dipodomys*, but the `surveys` table
 does not have a `genus` column. Thus, we need to `JOIN` information from
