@@ -99,7 +99,7 @@ The true power of SQL shows when extracting data across multiple tables or produ
 
 From the exercise above, you have certainly figured out that the `survey` table contains the field data while the `species` and `plots` tables respectively hold additional information on the study species (`species_id, genus, species, taxa`) and plot (`plot_id, plot_type`). We can use the id columns `plot_id` and `species_id` to relate the three database tables and query them collectively. The key operation for this purpose is `JOIN`.
 
-Recall from the lecture that `JOIN` combines the rows of two tables based on a related column. For example, we might be interested in all surveys that found a species of *Dipodomys*, but the `surveys` table does not have a `genus` column. Thus, we need to `JOIN` information from the `species` table based on the `species_id` column. We specify the column that two tables should be joined by with the `ON` clause. Note that for longer queries, we break up the code into multiple lines.
+Recall from the lecture that `JOIN` combines data from two tables based on a related column. For example, we might be interested in all surveys that found a species of *Dipodomys*, but the `surveys` table does not have a `genus` column. Thus, we need to `JOIN` information from the `species` table based on the `species_id` column. We specify the column that two tables should be joined by with the `ON` clause. Note that for longer queries, we break up the code into multiple lines.
 
 ```{r, out.lines = 5}
 RSQLite::dbGetQuery(conn, "SELECT surveys.month, surveys.day, surveys.year, species.genus 
