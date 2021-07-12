@@ -227,10 +227,12 @@ ggplot(occs_final, aes(x = species, y = decimalLatitude, fill = species, col = s
 # Maps of geographical variation in abundance per species and month
 ggplot(data_final, aes(fill = n_occ)) +
   geom_sf(lwd = 0) +
-  scale_fill_gradient(low = "blue", high = "red", trans = "log", breaks = c(1,10,100,1000,10000)) +
+  scale_fill_gradient(low = "blue", high = "red", trans = "log", name  = "Occurrences", breaks = c(1,10,100,1000,10000)) +
   facet_grid(rows = vars(species), cols = vars(month)) +
-  theme(axis.text.x = element_text(angle=45, hjust=1)) +
-  theme_bw()
+  ggtitle("Monthly occurrence records in Sweden") +
+  theme_bw() +
+  theme(axis.text = element_blank(),
+        axis.title.x = element_text("Month"), axis.title.y = element_text("Species"))
 
 # Maps of geographical variation in presence per species and month
 ggplot(data_final, aes(fill = as.factor(present))) +
@@ -271,7 +273,7 @@ pred_df = bind_rows(pred_list)
 ggplot(pred_df, aes(x = tmin, y = prec, z = pred, color = pred)) +
   geom_contour_filled() +
   scale_color_viridis_c() +
-  facet_wrap("species")
+  facet_wrap("species") 
 
 #--------------------------------------------------------------------------------#
 ####                                   PUBLISH                                ####
